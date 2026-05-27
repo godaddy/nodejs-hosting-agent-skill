@@ -1,0 +1,11 @@
+{
+  "name": "fixture-bad-build",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "next start"
+  },
+  "dependencies": {
+    "next": "^14.0.0"
+  }
+}

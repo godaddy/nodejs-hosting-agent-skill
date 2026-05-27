@@ -1,0 +1,14 @@
+{
+  "name": "nodejs-hosting-agent-skill",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Agent skill and validator for GoDaddy Node.js Hosting (PaaS)",
+  "license": "MIT",
+  "scripts": {
+    "test": "node --test tests/validate-paas.test.mjs tests/drift-check.test.mjs",
+    "validate": "node skills/godaddy-nodejs-hosting/scripts/validate-paas.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

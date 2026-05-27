@@ -1,0 +1,4 @@
+# Deploy validator is a local read-only CLI and argv selects the project root by design.
+# Static analysis can't handle this properly without flagging false positives on fs reads.
+paths-ignore:
+  - skills/godaddy-nodejs-hosting/scripts/validate-paas.mjs

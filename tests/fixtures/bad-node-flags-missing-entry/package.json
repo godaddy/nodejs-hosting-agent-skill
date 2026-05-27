@@ -1,0 +1,12 @@
+{
+  "name": "fixture-bad-node-flags-missing",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "build": "echo build",
+    "start": "node --trace-warnings missing.js"
+  },
+  "dependencies": {
+    "express": "^4.18.0"
+  }
+}
