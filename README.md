@@ -8,11 +8,11 @@ Open source [Agent Skill](https://cursor.com/docs) for building and adapting Nod
 
 Supports **npm**, **pnpm**, and **yarn**.
 
-**Repository:** [github.com/godaddy/nodejs-hosting-agent-skill](https://github.com/godaddy/nodejs-hosting-agent-skill) - the repo ships tests and docs; the installable skill is **`skills/godaddy-nodejs-hosting/`** (skill id: `godaddy-nodejs-hosting`).
+**Repository:** [github.com/godaddy/nodejs-hosting-agent-skill](https://github.com/godaddy/nodejs-hosting-agent-skill) - the repo ships tests and docs. The installable skill is **`skills/godaddy-nodejs-hosting`** (skill id: `godaddy-nodejs-hosting`).
 
 ## Quick start
 
-1. **Install the skill** — see [docs/INSTALL.md](docs/INSTALL.md):
+1. **Install the skill** - see [docs/INSTALL.md](docs/INSTALL.md):
    ```bash
    npx skills add godaddy/nodejs-hosting-agent-skill
    ```
