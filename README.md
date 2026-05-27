@@ -1,17 +1,23 @@
 # GoDaddy Node.js Hosting - Agent Skill
 
-Open source [Agent Skill](https://cursor.com/docs) for building and adapting Node.js apps on [GoDaddy Node.js Hosting (PaaS)](https://godaddy.com/nodejs): upload a project folder → install deps → `build` (if present) → `start`. Supports **npm**, **pnpm**, and **yarn**.
+Open source [Agent Skill](https://cursor.com/docs) for building and adapting Node.js apps on [GoDaddy Node.js Hosting (PaaS)](https://godaddy.com/nodejs):
 
-**Repository:** [github.com/godaddy/nodejs-hosting-agent-skill](https://github.com/godaddy/nodejs-hosting-agent-skill) — the repo ships tests and docs; the installable skill is **`skills/godaddy-nodejs-hosting/`** (skill id: `godaddy-nodejs-hosting`).
+- Upload a project folder
+- Install deps → `build` (if present)
+- Run the application (`start`)
+
+Supports **npm**, **pnpm**, and **yarn**.
+
+**Repository:** [github.com/godaddy/nodejs-hosting-agent-skill](https://github.com/godaddy/nodejs-hosting-agent-skill) - the repo ships tests and docs; the installable skill is **`skills/godaddy-nodejs-hosting/`** (skill id: `godaddy-nodejs-hosting`).
 
 ## Quick start
 
 1. **Install the skill** — see [docs/INSTALL.md](docs/INSTALL.md):
    ```bash
-   npx skills add godaddy/nodejs-hosting-agent-skill --skill godaddy-nodejs-hosting -g -a cursor -y
+   npx skills add godaddy/nodejs-hosting-agent-skill
    ```
    Or symlink / marketplace when listed.
-2. Open your **app** folder in Cursor (not this repo).
+2. Open your **app** folder in your editor of choice (not this repo).
 3. Invoke **`@godaddy-nodejs-hosting`** and ask it to prepare the project for Node.js Hosting (build or adapt).
 4. Validate before upload (optional; requires Node.js):
    ```bash
