@@ -1,10 +1,6 @@
 # GoDaddy Node.js Hosting - Agent Skill
 
-Open source [Agent Skill](https://cursor.com/docs) for building and adapting Node.js apps on [GoDaddy Node.js Hosting (PaaS)](https://godaddy.com/nodejs):
-
-- Upload a project folder
-- Install deps → `build` (if present)
-- Run the application (`start`)
+Open source [Agent Skill](https://agentskills.io/home) for building and adapting Node.js apps on [GoDaddy Node.js Hosting (PaaS)](https://godaddy.com/nodejs).
 
 Supports **npm**, **pnpm**, and **yarn**.
 
@@ -26,7 +22,7 @@ Supports **npm**, **pnpm**, and **yarn**.
 
 The skill includes workflows for new apps and existing repos, framework recipes, and a deploy contract enforced by `validate-paas.mjs`.
 
-## Without Cursor skills
+## Using Without Agent Skills
 
 If your tool does not support Agent Skills (e.g. Claude.ai or a generic chat), copy [CLAUDE.md](CLAUDE.md) into your app’s project root and ask the model to follow it.
 
