@@ -20,11 +20,17 @@ Non-technical users should use **`npx skills add`** (one command) or a marketpla
 Uses [vercel-labs/skills](https://github.com/vercel-labs/skills). Installs into Cursor, Claude Code, and other supported agents.
 
 ```bash
+# Target Claude Code
+npx skills add godaddy/nodejs-hosting-agent-skill --skill godaddy-nodejs-hosting -g -a claude-code -y
+```
+
+```bash
+# Alternatively target Cursor
 npx skills add godaddy/nodejs-hosting-agent-skill --skill godaddy-nodejs-hosting -g -a cursor -y
 ```
 
-- `-g` — available in all projects (`~/.cursor/skills/`, etc.)
-- `-a cursor` — target Cursor only (omit or add agents as needed)
+- `-g` — available in all projects (`~/.cursor/skills/`, `~/.claude/skills/` etc.)
+- `-a claude`, `-a cursor` — target Claude Code or Cursor only (omit or add agents as needed)
 - List skills in the repo first: `npx skills add godaddy/nodejs-hosting-agent-skill --list`
 
 Then open your **app** workspace and use **`@godaddy-nodejs-hosting`** in chat.

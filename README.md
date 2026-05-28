@@ -12,6 +12,10 @@ Supports **npm**, **pnpm**, and **yarn**.
    ```bash
    npx skills add godaddy/nodejs-hosting-agent-skill
    ```
+   **Claude Code:** enable **Claude Code** in the installer's agent picker (easy to miss), or:
+   ```bash
+   npx skills add godaddy/nodejs-hosting-agent-skill --skill godaddy-nodejs-hosting -g -a claude-code
+   ```
    Or symlink / marketplace when listed.
 2. Open your **app** folder in your editor of choice (not this repo).
 3. Invoke **`@godaddy-nodejs-hosting`** and ask it to prepare the project for Node.js Hosting (build or adapt).
