@@ -1,0 +1,13 @@
+{
+  "name": "mysql-good",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "build": "echo build",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.0",
+    "mysql2": "^3.11.0"
+  }
+}

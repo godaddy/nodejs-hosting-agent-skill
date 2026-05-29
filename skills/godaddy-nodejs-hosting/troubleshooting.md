@@ -14,7 +14,7 @@ Map symptoms to [contract.md](contract.md) rules and validator IDs.
 | Secrets leaked | C8 | W001 | Remove `.env` from upload; use hosting UI for env vars |
 | Monorepo upload fails | C1 | — | Upload single package folder only |
 | External API unreachable | C11 | — | Use HTTP/HTTPS (80/443) only |
-| Database connection fails | C12 | — | Use platform MySQL `DB_*` env vars and `mysql2`; not remote :3306 |
+| Database connection fails | C12 | E009, E010 | Use platform MySQL: all five `DB_*` from `process.env`, `mysql2` in `dependencies`; not remote :3306 |
 
 ## Validator exit codes
 

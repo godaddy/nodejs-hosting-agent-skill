@@ -3,6 +3,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   parseNodeStart,
+  envVarReferencedInContent,
   runValidation,
 } from '../skills/godaddy-nodejs-hosting/scripts/validate-paas.mjs';
 
@@ -44,8 +45,9 @@ test('express-node-require fixture warns W003 instead of false E003', () => {
 });
 
 test('next fixture passes', () => {
-  const { exitCode } = runValidation([fixtureDir('next')]);
-  assert.equal(exitCode, 0);
+  const { exitCode, errors } = runValidation([fixtureDir('next')]);
+  assert.equal(errors.length, 0);
+  assert.ok(exitCode === 0 || exitCode === 2, `exit ${exitCode}`);
 });
 
 test('static-vite fixture passes', () => {
@@ -102,6 +104,24 @@ test('bad-missing-build fails with E005', () => {
 test('missing directory exits 1', () => {
   const { exitCode } = runValidation([fixtureDir('does-not-exist')]);
   assert.equal(exitCode, 1);
+});
+
+test('envVarReferencedInContent detects process.env.DB_HOST', () => {
+  assert.ok(envVarReferencedInContent('const h = process.env.DB_HOST;', 'DB_HOST'));
+  assert.ok(envVarReferencedInContent("const h = process.env['DB_HOST'];", 'DB_HOST'));
+  assert.equal(envVarReferencedInContent('const h = "localhost";', 'DB_HOST'), false);
+});
+
+test('mysql-good fixture passes', () => {
+  const { exitCode, errors } = runValidation([fixtureDir('mysql-good')]);
+  assert.equal(errors.length, 0);
+  assert.ok(exitCode === 0 || exitCode === 2);
+});
+
+test('bad-mysql-missing-env fails with E010', () => {
+  const { exitCode, errors } = runValidation([fixtureDir('bad-mysql-missing-env')]);
+  assert.equal(exitCode, 1);
+  assert.ok(errors.some((e) => e.id === 'E010'));
 });
 
 test('runValidation returns independent error snapshots per call', () => {

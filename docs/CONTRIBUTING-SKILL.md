@@ -25,7 +25,7 @@ These files must stay aligned:
 
 **One PR** should update all affected files when changing deploy rules.
 
-Bump `contractVersion` in `contract.md` for breaking contract changes (current: **2** — requires `main`, always requires `build`).
+Bump `contractVersion` in `contract.md` for breaking contract changes (current: **3** — requires `main`, always requires `build`, MySQL E009/E010).
 
 ## Adding a framework
 
