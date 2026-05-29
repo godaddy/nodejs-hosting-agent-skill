@@ -1,4 +1,4 @@
-# CLAUDE.md — Node.js Hosting
+# AGENTS.md — Node.js Hosting
 
 This project is built to deploy on Node.js Hosting, a managed Node.js hosting platform. Use this file as context when helping build, debug, or prepare this app for deployment.
 
