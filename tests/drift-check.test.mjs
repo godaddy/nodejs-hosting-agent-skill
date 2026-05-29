@@ -23,7 +23,7 @@ const REQUIRED_IN_AGENTS = [
 ];
 
 const REQUIRED_IN_CONTRACT = [
-  'contractVersion: 2',
+  'contractVersion: 3',
   'process.env.PORT',
   'scripts.start',
   'scripts.build',

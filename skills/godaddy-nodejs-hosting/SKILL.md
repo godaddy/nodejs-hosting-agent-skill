@@ -21,6 +21,7 @@ Rules: [contract.md](contract.md). Recipes: [examples.md](examples.md). Errors: 
 | New app / scaffold / greenfield | [New app workflow](#new-app-workflow) |
 | Existing repo / deploy failed / make this work on hosting | [Adapting an existing app](#adapting-an-existing-app) |
 | AI export (Lovable, Replit, Bolt, etc.) | [Adapting an existing app](#adapting-an-existing-app) + [AI export quick fixes](#ai-export-quick-fixes) |
+| Uses MySQL / database on platform | [Managed MySQL](#managed-mysql) |
 
 ## Audience routing
 
@@ -29,7 +30,7 @@ Rules: [contract.md](contract.md). Recipes: [examples.md](examples.md). Errors: 
 1. Output the [pre-upload checklist](#pre-upload-checklist) first in plain language.
 2. Follow [Adapting an existing app](#adapting-an-existing-app) (existing zip or export).
 3. Prefer the [static SPA + Express](examples.md#vite-react-vue-spa) or [static only](examples.md#static-only) recipe when there is no server.
-4. One small change at a time; explain what to zip and upload.
+4. One small change at a time; explain the next hosting step in plain language (Git sync or zip upload in the UI).
 5. Run the validator before saying the app is ready.
 
 **Technical user - existing app**: follow [Adapting an existing app](#adapting-an-existing-app); use the matching framework recipe for `start`/`build` only; do not re-explaining basics.
@@ -45,6 +46,21 @@ Rules: [contract.md](contract.md). Recipes: [examples.md](examples.md). Errors: 
 - Secrets via `process.env`; no `.env` in zip; zip under 100 MB
 - One app per upload; lockfile when possible
 - Outbound HTTP/HTTPS only; platform MySQL via `DB_*` env + `mysql2` if using a database ([contract.md](contract.md))
+
+## Publishing updates (customer communication)
+
+The platform supports **Git repository sync** and **zip upload** in the Node.js Hosting UI. See [AGENTS.md](../../AGENTS.md) Deployment Flow for agent context.
+
+- **Do not infer** deploy method from `.git`, lockfiles, or export origin (a zip export may include `.git` from local development).
+- **Default when telling the user how to publish:** use neutral wording — e.g. *“When you’re ready, update the app in Node.js Hosting using Git sync or a zip upload in the hosting UI.”*
+- **Only go path-specific** (zip steps vs connect/push Git) if the user **states or asks** which they use.
+- **Avoid** prescriptive one-path phrases like “upload a new zip” or “push to your remote” without that confirmation.
+
+## Managed MySQL
+
+Optional platform MySQL injects `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`. The app must read each from `process.env` (not hard-coded). Use **`mysql2`** in `dependencies` and parameterized queries.
+
+Recipe: [examples.md#managed-mysql](examples.md#managed-mysql). Validator: **E009**, **E010** when a DB client or Prisma MySQL provider is detected.
 
 ## Adapting an existing app
 
@@ -93,7 +109,9 @@ Symptom detail: [troubleshooting.md](troubleshooting.md).
 | E008 | Add `main` pointing at an existing entry file |
 | W001 | Remove `.env` from upload; use hosting UI for env vars |
 | W002 | Optional: add `engines.node` |
-| W004 | Remove `node_modules` from upload zip |
+| W004 | Exclude `node_modules` from deployment (zip or Git) |
+| E009 | Add `mysql2` to `dependencies` |
+| E010 | Read each `DB_*` from `process.env` (see [managed-mysql](examples.md#managed-mysql)) |
 
 **Special cases**
 
@@ -103,7 +121,7 @@ Symptom detail: [troubleshooting.md](troubleshooting.md).
 
 For Replit, Lovable, and Bolt patterns, see [AI export quick fixes](#ai-export-quick-fixes) after applying this workflow.
 
-Adaptation is complete under the same [done criteria](#done-criteria) as a new app (validator `0`, checklist, zip the project root).
+Adaptation is complete under the same [done criteria](#done-criteria) as a new app (validator `0`, checklist, ready to update in Node.js Hosting).
 
 ## New app workflow
 
@@ -150,11 +168,11 @@ For Lovable/Bolt static hosting, use the [vite-react-vue-spa](examples.md#vite-r
 ## Pre-upload checklist
 
 - [ ] `package.json`: `name`, `version`, `main`, `build`, `start`
-- [ ] Production deps in `dependencies`; no `node_modules` in zip
+- [ ] Production deps in `dependencies`; do not deploy `node_modules` (exclude from zip or Git)
 - [ ] `process.env.PORT` for listening; secrets via `process.env`
-- [ ] Zip under 100 MB
+- [ ] Deployment artifact under 100 MB (zip upload)
 - [ ] Runs locally: install → build → start
-- [ ] Lockfile in zip; validator exit 0; no `.env`
+- [ ] Lockfile present (committed or included in upload); validator exit 0; no `.env`
 - [ ] HTTP/HTTPS outbound only; DB uses `DB_*` + `mysql2` if applicable
 
 ## Done criteria
@@ -163,4 +181,4 @@ Task is complete only when:
 
 1. `validate-paas.mjs` exits `0` on the project directory.
 2. Pre-upload checklist is satisfied.
-3. User knows to zip the **project root** (single app folder) for upload.
+3. User knows they can publish/update the app in Node.js Hosting (Git sync or zip upload in the UI). Mention only the path they use if they’ve already said so.
