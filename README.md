@@ -18,7 +18,7 @@ Supports **npm**, **pnpm**, and **yarn**.
    ```
    Or symlink / marketplace when listed.
 2. Open your **app** folder in your editor of choice (not this repo).
-3. Invoke **`@godaddy-nodejs-hosting`** and ask it to prepare the project for Node.js Hosting (build or adapt).
+3. Invoke **`/godaddy-nodejs-hosting`** (Claude) or **`@godaddy-nodejs-hosting`** (Cursor) and ask it to prepare the project for Node.js Hosting (build or adapt).
 4. Validate before upload (optional; requires Node.js):
    ```bash
    npm run validate -- /path/to/your-app

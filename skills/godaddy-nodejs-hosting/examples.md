@@ -264,3 +264,38 @@ app.get('*', (req, res) => {
 });
 app.listen(port);
 ```
+
+---
+
+## managed-mysql
+
+**Detection:** `mysql2`, `sequelize`, `knex`, `typeorm`, or `mariadb` in dependencies; or Prisma `provider = "mysql"` in `prisma/schema.prisma`.
+
+**Platform:** Since each Node.js Hosting app gets its own MySQL capacity automatically, the platform sets `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, and `DB_PASSWORD`. Read **each** from `process.env` in application code (typically one config module).
+
+**package.json:**
+
+```json
+{
+  "dependencies": {
+    "express": "^4.18.0",
+    "mysql2": "^3.11.0"
+  }
+}
+```
+
+**db.js (all five vars from env):**
+
+```javascript
+const mysql = require('mysql2/promise');
+
+module.exports = mysql.createPool({
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
+  database: process.env.DB_NAME,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+});
+```
+
+Use **parameterized** queries (`pool.query('SELECT * FROM users WHERE id = ?', [id])`). Do not interpolate user input into SQL strings.

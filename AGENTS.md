@@ -1,17 +1,25 @@
-# CLAUDE.md — Node.js Hosting
+# AGENTS.md — Node.js Hosting
 
 This project is built to deploy on Node.js Hosting, a managed Node.js hosting platform. Use this file as context when helping build, debug, or prepare this app for deployment.
 
 ## Platform Overview
 
-Node.js Hosting is a managed Node.js PaaS that supports Node.js applications and static sites. Customers upload their project folder through the GoDaddy interface — no Docker, no CI/CD pipelines, no infrastructure config needed. The platform handles SSL, CDN, and server-side compute automatically.
+Node.js Hosting is a managed Node.js PaaS that supports Node.js applications and static sites. Customers deploy by **uploading a zip** or **connecting a Git repository** in the GoDaddy interface — no Docker, no CI/CD pipelines, no infrastructure config needed. The platform handles SSL, CDN, and server-side compute automatically.
+
+A local `.git` folder does **not** by itself mean the customer uses Git deploy (zip exports often include `.git`). To avoid confusing the customer, we shouldn't make any references to uploading a zip or pushing to a remote Git in messages to the customer unless the customer explicitly asks about that.
 
 ## Deployment Flow
 
-1. Customer uploads their project folder via the Node.js Hosting UI
+1. Customer provides the app via **zip upload** or **Git sync** in the Node.js Hosting UI
 2. The platform installs dependencies and builds the app
 3. The app is deployed to a private preview environment (requires GoDaddy auth to view)
 4. Once ready, the customer can publish to production and connect a custom domain
+
+**Zip upload:** zip the project root, exclude irrelevant files (`node_modules`, build caches, and `.git`), and include a lockfile when possible.
+
+**Git sync:** connect the remote repository, commit the lockfile, do not commit `node_modules` or `.env`.
+
+When guiding a customer to publish changes, describe **both** Git sync and zip upload unless they’ve confirmed which they use.
 
 ## Requirements
 

@@ -1,6 +1,6 @@
 # Node.js Hosting deploy contract
 
-contractVersion: 2
+contractVersion: 3
 
 Testable rules for apps deployed on GoDaddy Node.js Hosting (PaaS). Enforced by [scripts/validate-paas.mjs](scripts/validate-paas.mjs) where noted.
 
@@ -27,7 +27,7 @@ Testable rules for apps deployed on GoDaddy Node.js Hosting (PaaS). Enforced by 
 | C9 | Vite: platform updates allowed-hosts; dev/preview must respect `PORT`. | — |
 | C10 | Upload zip under 100 MB; exclude `node_modules`, caches, large artifacts. | W004 |
 | C11 | Outbound: HTTP (80), HTTPS (443), and GoDaddy managed MySQL only. | — |
-| C12 | If using DB: read `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD` from env; use `mysql2` and parameterized queries. External DBs on non-80/443 are not reachable. | — |
+| C12 | If using DB: read `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD` from `process.env`; use `mysql2` in `dependencies` and parameterized queries. External DBs on non-80/443 are not reachable. | E009, E010 |
 
 ## Framework build hints
 
@@ -63,4 +63,6 @@ These must not appear only in `devDependencies` if required at runtime:
 | W001 | `.env` file present in project |
 | W002 | Missing `engines.node` |
 | W003 | Could not verify start script target |
-| W004 | `node_modules` present (exclude from zip) |
+| W004 | `node_modules` present (exclude from deployment) |
+| E009 | Database use without `mysql2` in `dependencies` |
+| E010 | Missing `process.env` reference for a required `DB_*` variable |

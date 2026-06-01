@@ -62,6 +62,16 @@ const SKIP_DIRS = new Set([
   'coverage',
 ]);
 
+const DB_ENV_VARS = ['DB_HOST', 'DB_PORT', 'DB_NAME', 'DB_USER', 'DB_PASSWORD'];
+
+const MYSQL_CLIENT_PACKAGES = [
+  'mysql2',
+  'sequelize',
+  'knex',
+  'typeorm',
+  'mariadb',
+];
+
 const errors = [];
 const warnings = [];
 
@@ -267,7 +277,73 @@ function checkPackageMetadata(pkg, projectRoot) {
 function checkUploadHygiene(projectRoot) {
   const nm = pathUnderProjectRoot(projectRoot, 'node_modules');
   if (nm && existsSync(nm)) {
-    warn('W004', 'node_modules present — exclude from upload zip (platform runs install)');
+    warn(
+      'W004',
+      'node_modules present — exclude from deployment (zip or Git); platform runs install',
+    );
+  }
+}
+
+export function envVarReferencedInContent(content, varName) {
+  const patterns = [
+    new RegExp(`process\\.env\\.${varName}\\b`),
+    new RegExp(`process\\.env\\?\\.${varName}\\b`),
+    new RegExp(`process\\.env\\[\\s*['"]${varName}['"]\\s*\\]`),
+  ];
+  if (patterns.some((re) => re.test(content))) return true;
+  return new RegExp(`\\b${varName}\\b[^=]*=\\s*process\\.env`).test(content);
+}
+
+function envVarReferencedInFiles(files, varName) {
+  for (const file of files) {
+    let content;
+    try {
+      content = readFileSync(file, 'utf8');
+    } catch {
+      continue;
+    }
+    if (envVarReferencedInContent(content, varName)) return true;
+  }
+  return false;
+}
+
+function usesMysqlFromPrisma(projectRoot) {
+  const schemaPath = pathUnderProjectRoot(projectRoot, 'prisma', 'schema.prisma');
+  if (!schemaPath || !existsSync(schemaPath)) return false;
+  try {
+    const schema = readFileSync(schemaPath, 'utf8');
+    return /provider\s*=\s*["']mysql["']/i.test(schema);
+  } catch {
+    return false;
+  }
+}
+
+export function usesDatabase(deps, projectRoot) {
+  if (MYSQL_CLIENT_PACKAGES.some((name) => deps[name])) return true;
+  return usesMysqlFromPrisma(projectRoot);
+}
+
+function checkDatabaseConfig(projectRoot, pkg) {
+  const deps = allDeps(pkg);
+  if (!usesDatabase(deps, projectRoot)) return;
+
+  const runtimeDeps = pkg.dependencies || {};
+  if (!runtimeDeps.mysql2) {
+    if (deps.mysql2) {
+      err('E009', 'mysql2 is only in devDependencies — move to dependencies for production');
+    } else {
+      err('E009', 'Database client detected — add mysql2 to dependencies for platform MySQL');
+    }
+  }
+
+  const files = walkSourceFiles(projectRoot);
+  for (const varName of DB_ENV_VARS) {
+    if (!envVarReferencedInFiles(files, varName)) {
+      err(
+        'E010',
+        `Managed MySQL requires process.env.${varName} (set by platform when DB is enabled)`,
+      );
+    }
   }
 }
 
@@ -353,6 +429,7 @@ function validateProject(projectRoot) {
   checkBuildScript(pkg, deps);
   checkRuntimeDeps(pkg);
   checkHardcodedPorts(projectRoot);
+  checkDatabaseConfig(projectRoot, pkg);
 
   const envPath = pathUnderProjectRoot(projectRoot, '.env');
   if (envPath && existsSync(envPath)) {
