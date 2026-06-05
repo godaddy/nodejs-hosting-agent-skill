@@ -62,9 +62,16 @@ await fastify.listen({ port, host: '0.0.0.0' });
 
 ## nextjs
 
-**Detection:** `next` in `dependencies`.
+**Detection:** `next` in `dependencies`, and **no** `output: 'export'` in `next.config.js`, `next.config.mjs`, or `next.config.ts`.
 
-**package.json:**
+Check `next.config.*` before choosing a recipe. Standard Next.js uses a Next server at runtime; static export does not — see [nextjs-static-export](#nextjs-static-export).
+
+| Path | Detection | `build` | `start` |
+|------|-----------|---------|---------|
+| Standard Next.js | `next` dep, no `output: 'export'` | `next build` | `next start` |
+| Static export | `output: 'export'` in `next.config.*` | `next build` | `node server.js` (Express) |
+
+**package.json (standard):**
 
 ```json
 {
@@ -80,7 +87,51 @@ await fastify.listen({ port, host: '0.0.0.0' });
 }
 ```
 
-Do not replace `next start` with a custom Node entry unless documented by Next.js for your version.
+Do not replace `next start` for standard Next.js apps (SSR, API routes, server middleware). Static export (`output: 'export'`) is the documented exception — use [nextjs-static-export](#nextjs-static-export).
+
+---
+
+## nextjs-static-export
+
+**Detection:** `output: 'export'` in `next.config.js`, `next.config.mjs`, or `next.config.ts`. `images.unoptimized: true` often appears alongside export mode but is not required for detection.
+
+**Why Express:** Node.js Hosting runs `install → build → start` as a Node process. Export mode runs `next build` to static HTML/JS/CSS in `out/` — there is no Next.js server for `next start`. A small Express server is the hosting adapter, not a framework change. Do not suggest removing `output: 'export'` unless the user needs SSR, API routes, or other server features.
+
+**package.json:**
+
+```json
+{
+  "name": "my-app",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "build": "next build",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.0",
+    "next": "^14.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  }
+}
+```
+
+Keep `next build` (not `vite build`). Output directory is **`out/`**, not `dist/` or `build/`.
+
+**server.js (serve `out/`):**
+
+```javascript
+const express = require('express');
+const path = require('path');
+const app = express();
+const port = process.env.PORT || 3000;
+
+app.use(express.static(path.join(__dirname, 'out')));
+app.listen(port, () => console.log(`Listening on ${port}`));
+```
+
+**Agent note:** `express.static` is enough for most export builds — Next generates per-route HTML files. Do not copy the SPA catch-all to `index.html` from the Vite recipe; that pattern is for single-page apps, not multi-page static export.
 
 ---
 

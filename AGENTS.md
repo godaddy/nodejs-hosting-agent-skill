@@ -304,7 +304,8 @@ If install, build, and start succeed locally, the app is ready for Node.js Hosti
 Ensure `express` is in `dependencies`, set `"main"` to your server file, `"build": "echo build"` (or `tsc` if TypeScript), and `"start": "node server.js"`.
 
 ### Next.js
-Use `next build` as a `build` script and `next start` as the `start` script:
+
+**Standard Next.js** (SSR, API routes, server features): use `next build` as the `build` script and `next start` as the `start` script:
 
 ```json
 {
@@ -316,6 +317,30 @@ Use `next build` as a `build` script and `next start` as the `start` script:
 ```
 
 Next.js apps work out of the box with server-side rendering, API routes, and static generation.
+
+**Static export** (`output: 'export'` in `next.config.*`): keep `next build`, but replace `next start` with a small Express server that serves the `out/` directory. Node.js Hosting requires a Node `start` process; export mode produces static files only — there is no Next.js server to run.
+
+```json
+{
+  "scripts": {
+    "build": "next build",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.0"
+  }
+}
+```
+
+```javascript
+const express = require('express');
+const path = require('path');
+const app = express();
+const port = process.env.PORT || 3000;
+
+app.use(express.static(path.join(__dirname, 'out')));
+app.listen(port);
+```
 
 ### Nuxt.js
 Similar to Next.js — build then start:
