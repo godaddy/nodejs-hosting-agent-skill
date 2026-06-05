@@ -29,7 +29,7 @@ Rules: [contract.md](contract.md). Recipes: [examples.md](examples.md). Errors: 
 
 1. Output the [pre-upload checklist](#pre-upload-checklist) first in plain language.
 2. Follow [Adapting an existing app](#adapting-an-existing-app) (existing zip or export).
-3. Prefer the [static SPA + Express](examples.md#vite-react-vue-spa) or [static only](examples.md#static-only) recipe when there is no server.
+3. Prefer the [static SPA + Express](examples.md#vite-react-vue-spa) or [static only](examples.md#static-only) recipe when there is no server. For Next.js with `output: 'export'`, use [nextjs-static-export](examples.md#nextjs-static-export) instead — explain: *"Your app builds to static files. We add a small server so GoDaddy can run it — your site stays the same."*
 4. One small change at a time; explain the next hosting step in plain language (Git sync or zip upload in the UI).
 5. Run the validator before saying the app is ready.
 
@@ -116,6 +116,7 @@ Symptom detail: [troubleshooting.md](troubleshooting.md).
 **Special cases**
 
 - **Monorepo (C1):** extract a single app folder with its own root `package.json` before adapting; do not restructure packages in place unless the user asks.
+- **Next.js static export:** Check `next.config.*` for `output: 'export'` before applying the standard Next recipe. Use [nextjs-static-export](examples.md#nextjs-static-export) (`next build` + Express serving the export dir), not `next start`. Match `distDir` in config (default `out/`). Same hosting pattern as Vite/Lovable static apps, but build is `next build`.
 - **Frontend-only / no server:** [vite-react-vue-spa](examples.md#vite-react-vue-spa) and [AI export quick fixes](#ai-export-quick-fixes).
 - **Migrating from another host:** same steps; focus on `PORT`, `start`/`build`, `dependencies`, and lockfile.
 
@@ -141,7 +142,8 @@ Run the validator as in [Adapting an existing app](#adapting-an-existing-app).
 
 | Signal in `package.json` | Recipe |
 |--------------------------|--------|
-| `next` in dependencies | [examples.md#nextjs](examples.md#nextjs) |
+| `next` in dependencies (standard) | [examples.md#nextjs](examples.md#nextjs) — check `next.config.*` first |
+| `output: 'export'` in `next.config.*` | [examples.md#nextjs-static-export](examples.md#nextjs-static-export) |
 | `nuxt` in dependencies | [examples.md#nuxtjs](examples.md#nuxtjs) |
 | `@remix-run/node` or `remix` | [examples.md#remix](examples.md#remix) |
 | `@nestjs/core` | [examples.md#nestjs](examples.md#nestjs) |
@@ -159,6 +161,7 @@ Do not invent `start` commands for known frameworks; use the recipe exactly.
 |--------|-----|
 | Replit | Remove `.replit`, `replit.nix`; ensure root `start` script |
 | Lovable / Bolt | Add Express static server for `dist/` or `build/`; add `express` to `dependencies` |
+| Next.js static export | `output: 'export'` in config: keep `next build`; add Express serving export dir from `distDir` (default `out/`) ([nextjs-static-export](examples.md#nextjs-static-export)) — not the Vite/Lovable recipe |
 | Missing `package.json` | Create with `start`; run install (npm/pnpm/yarn) to generate lockfile |
 | Hardcoded port | Use `process.env.PORT \|\| 3000` |
 | Wrong deps section | Move runtime packages to `dependencies` |
