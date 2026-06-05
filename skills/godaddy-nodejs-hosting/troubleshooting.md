@@ -10,7 +10,7 @@ Map symptoms to [contract.md](contract.md) rules and validator IDs.
 | `Cannot find module` in production | deps | E006 | Move packages from `devDependencies` to `dependencies` |
 | Build step skipped / stale assets | C3 | E005 | Add `scripts.build` (real command or `echo build`) |
 | Next/Nuxt/Remix blank or old UI | C3 | E005 | Use framework `build`; run install → build → start locally |
-| `next start` fails / "Could not find a production build" / app has `output: 'export'` | C4 | E002, E003 | Static export: switch `start` to Express serving `out/`; keep `next build` ([examples.md#nextjs-static-export](examples.md#nextjs-static-export)) |
+| `next start` fails / "Could not find a production build" / app has `output: 'export'` | C4 | E002, E003 | Static export: switch `start` to Express serving the export dir from `distDir` in `next.config.*` (default `out/`); keep `next build` ([examples.md#nextjs-static-export](examples.md#nextjs-static-export)) |
 | Upload too large | C10 | W004 | Remove `node_modules`, caches from zip |
 | Secrets leaked | C8 | W001 | Remove `.env` from upload; use hosting UI for env vars |
 | Monorepo upload fails | C1 | — | Upload single package folder only |

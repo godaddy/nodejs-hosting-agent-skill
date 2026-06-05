@@ -95,7 +95,7 @@ Do not replace `next start` for standard Next.js apps (SSR, API routes, server m
 
 **Detection:** `output: 'export'` in `next.config.js`, `next.config.mjs`, or `next.config.ts`. `images.unoptimized: true` often appears alongside export mode but is not required for detection.
 
-**Why Express:** Node.js Hosting runs `install → build → start` as a Node process. Export mode runs `next build` to static HTML/JS/CSS in `out/` — there is no Next.js server for `next start`. A small Express server is the hosting adapter, not a framework change. Do not suggest removing `output: 'export'` unless the user needs SSR, API routes, or other server features.
+**Why Express:** Node.js Hosting runs `install → build → start` as a Node process. Export mode runs `next build` to static HTML/JS/CSS (default `out/`; overridable via `distDir` in `next.config.*`) — there is no Next.js server for `next start`. A small Express server is the hosting adapter, not a framework change. Do not suggest removing `output: 'export'` unless the user needs SSR, API routes, or other server features.
 
 **package.json:**
 
@@ -117,9 +117,9 @@ Do not replace `next start` for standard Next.js apps (SSR, API routes, server m
 }
 ```
 
-Keep `next build` (not `vite build`). Output directory is **`out/`**, not `dist/` or `build/`.
+Keep `next build` (not `vite build`). Read `distDir` in `next.config.*` for the export folder (default `out/`); point Express at that path — do not hardcode `out/` when the project sets `distDir`.
 
-**server.js (serve `out/`):**
+**server.js (serve export dir):**
 
 ```javascript
 const express = require('express');
@@ -127,6 +127,7 @@ const path = require('path');
 const app = express();
 const port = process.env.PORT || 3000;
 
+// Match distDir in next.config (default 'out')
 app.use(express.static(path.join(__dirname, 'out')));
 app.listen(port, () => console.log(`Listening on ${port}`));
 ```

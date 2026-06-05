@@ -318,7 +318,7 @@ Ensure `express` is in `dependencies`, set `"main"` to your server file, `"build
 
 Next.js apps work out of the box with server-side rendering, API routes, and static generation.
 
-**Static export** (`output: 'export'` in `next.config.*`): keep `next build`, but replace `next start` with a small Express server that serves the `out/` directory. Node.js Hosting requires a Node `start` process; export mode produces static files only — there is no Next.js server to run.
+**Static export** (`output: 'export'` in `next.config.*`): keep `next build`, but replace `next start` with a small Express server that serves the static export directory. Default is `out/`; if `distDir` is set in `next.config.*`, serve that folder instead. Node.js Hosting requires a Node `start` process; export mode produces static files only — there is no Next.js server to run.
 
 ```json
 {
@@ -338,6 +338,7 @@ const path = require('path');
 const app = express();
 const port = process.env.PORT || 3000;
 
+// Match distDir in next.config (default 'out')
 app.use(express.static(path.join(__dirname, 'out')));
 app.listen(port);
 ```

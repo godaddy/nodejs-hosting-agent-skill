@@ -116,7 +116,7 @@ Symptom detail: [troubleshooting.md](troubleshooting.md).
 **Special cases**
 
 - **Monorepo (C1):** extract a single app folder with its own root `package.json` before adapting; do not restructure packages in place unless the user asks.
-- **Next.js static export:** Check `next.config.*` for `output: 'export'` before applying the standard Next recipe. Use [nextjs-static-export](examples.md#nextjs-static-export) (`next build` + Express serving `out/`), not `next start`. Same hosting pattern as Vite/Lovable static apps, but build is `next build` and output is `out/`.
+- **Next.js static export:** Check `next.config.*` for `output: 'export'` before applying the standard Next recipe. Use [nextjs-static-export](examples.md#nextjs-static-export) (`next build` + Express serving the export dir), not `next start`. Match `distDir` in config (default `out/`). Same hosting pattern as Vite/Lovable static apps, but build is `next build`.
 - **Frontend-only / no server:** [vite-react-vue-spa](examples.md#vite-react-vue-spa) and [AI export quick fixes](#ai-export-quick-fixes).
 - **Migrating from another host:** same steps; focus on `PORT`, `start`/`build`, `dependencies`, and lockfile.
 
@@ -161,7 +161,7 @@ Do not invent `start` commands for known frameworks; use the recipe exactly.
 |--------|-----|
 | Replit | Remove `.replit`, `replit.nix`; ensure root `start` script |
 | Lovable / Bolt | Add Express static server for `dist/` or `build/`; add `express` to `dependencies` |
-| Next.js static export | `output: 'export'` in config: keep `next build`; add Express serving `out/` ([nextjs-static-export](examples.md#nextjs-static-export)) — not the Vite/Lovable recipe |
+| Next.js static export | `output: 'export'` in config: keep `next build`; add Express serving export dir from `distDir` (default `out/`) ([nextjs-static-export](examples.md#nextjs-static-export)) — not the Vite/Lovable recipe |
 | Missing `package.json` | Create with `start`; run install (npm/pnpm/yarn) to generate lockfile |
 | Hardcoded port | Use `process.env.PORT \|\| 3000` |
 | Wrong deps section | Move runtime packages to `dependencies` |
