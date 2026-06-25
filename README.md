@@ -26,6 +26,14 @@ Supports **npm**, **pnpm**, and **yarn**.
 
 The skill includes workflows for new apps and existing repos, framework recipes, and a deploy contract enforced by `validate-paas.mjs`.
 
+## Updating the Skill
+
+If you have already installed the skill using `npx`, you can upgrade it to the latest version as follows:
+
+```bash
+npx skills update godaddy-nodejs-hosting -g -y
+```
+
 ## Using Without Agent Skills
 
 If your tool does not support Agent Skills (e.g. Claude.ai or a generic chat), copy [CLAUDE.md](CLAUDE.md) into your app’s project root and ask the model to follow it.
