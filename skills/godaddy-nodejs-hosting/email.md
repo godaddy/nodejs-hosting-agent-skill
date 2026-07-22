@@ -1,29 +1,16 @@
----
-name: godaddy-nodejs-hosting-email
-description: >-
-  Send transactional email from a Node.js app hosted on GoDaddy Node.js Hosting.
-  Uses the platform's built-in loopback email gateway — no SMTP config, no
-  Nodemailer, no third-party API keys. Copy a small helper into the app and
-  call `sendEmail({ to, subject, text, html })`.
-whenToUse: >-
-  User wants to send transactional emails, add email-sending functionality, or
-  implement notifications via email from an app deployed on GoDaddy Node.js
-  Hosting. Phrases like "send email", "email notification", "email when",
-  "transactional email", "email relay", "nodemailer", "smtp".
-disable-model-invocation: true
----
+# Email via the Node.js Hosting email gateway
 
-# Email via the GoDaddy Node.js Hosting email gateway
-
-Send mail by `POST`ing JSON to the platform's email gateway. The gateway authors the RFC-5322 message, applies platform sender-identity policy, attaches required tracking headers, and forwards to the configured SMTP relay. Customer code never touches SMTP.
+Send transactional email from an app on GoDaddy Node.js Hosting by `POST`ing JSON to the platform's built-in email gateway. The gateway authors the RFC-5322 message, applies platform sender-identity policy, attaches required tracking headers, and forwards to the configured SMTP relay. Customer code never touches SMTP — no `nodemailer`, no SMTP config, no third-party API keys.
 
 The gateway listens on `http://127.0.0.1:2525/api/email/send` inside every Node.js Hosting container. It is loopback-only — traffic never leaves the kernel — so no TLS is needed for the loopback hop.
 
-This skill vends a small `sendEmail()` helper. All email-sending code in the app should call that helper — do not POST to the gateway directly, and do not import `nodemailer`.
+Copy the [`sendEmail()` helper](#the-helper) into the app and call it. **All email-sending code should call the helper** — do not POST to the gateway directly, and do not import `nodemailer`.
+
+Referenced from [SKILL.md](SKILL.md) (`## Email`). Contract rule: **C13**.
 
 ---
 
-## When to use this skill
+## When email applies
 
 - Send transactional emails (order confirmations, password resets, receipts).
 - Implement contact forms.
@@ -439,7 +426,7 @@ For mass mail or large attachments, batch into multiple sends or move the data o
 
 ## Migrating from Nodemailer
 
-If the customer's existing code uses `nodemailer` (SMTP to `localhost:25` or an external provider), migrate it to the helper. The gateway is a better default: no SMTP config, sender identity handled centrally, and no third-party API keys to manage.
+If the customer's existing code uses `nodemailer` (SMTP to `localhost:25` or an external provider), migrate it to the helper. The gateway is a better default: no SMTP config, sender identity handled centrally, and no third-party API keys to manage. Outbound SMTP is not routable from the container, so `nodemailer` cannot work on the platform regardless.
 
 **Mechanical mapping:**
 

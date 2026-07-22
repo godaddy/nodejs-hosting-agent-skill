@@ -1,13 +1,12 @@
-# Installing the Node.js Hosting skills
+# Installing the Node.js Hosting skill
 
 Repository: [github.com/godaddy/nodejs-hosting-agent-skill](https://github.com/godaddy/nodejs-hosting-agent-skill)
 
-Installable skills:
+Installable skill:
 
 | Skill id | Path | What it does |
 |----------|------|--------------|
-| **`godaddy-nodejs-hosting`** | `skills/godaddy-nodejs-hosting/` | Build/adapt Node.js apps for Node.js Hosting: `package.json`, PORT binding, framework recipes, deploy contract. |
-| **`godaddy-nodejs-hosting-email`** | `skills/godaddy-nodejs-hosting-email/` | Send transactional email from a Node.js Hosting app via the platform's built-in email gateway. |
+| **`godaddy-nodejs-hosting`** | `skills/godaddy-nodejs-hosting/` | Build/adapt Node.js apps for Node.js Hosting: `package.json`, PORT binding, framework recipes, managed MySQL, transactional email via the platform gateway, deploy contract. |
 
 ## Who is this for?
 
@@ -25,38 +24,35 @@ Non-technical users should use **`npx skills add`** (one command) or a marketpla
 Uses [vercel-labs/skills](https://github.com/vercel-labs/skills). Installs into Cursor, Claude Code, and other supported agents.
 
 ```bash
-# Target Claude Code — install both skills
+# Target Claude Code
 npx skills add godaddy/nodejs-hosting-agent-skill --skill godaddy-nodejs-hosting -g -a claude-code -y
-npx skills add godaddy/nodejs-hosting-agent-skill --skill godaddy-nodejs-hosting-email -g -a claude-code -y
 ```
 
 ```bash
 # Alternatively target Cursor
 npx skills add godaddy/nodejs-hosting-agent-skill --skill godaddy-nodejs-hosting -g -a cursor -y
-npx skills add godaddy/nodejs-hosting-agent-skill --skill godaddy-nodejs-hosting-email -g -a cursor -y
 ```
 
 - `-g` — available in all projects (`~/.cursor/skills/`, `~/.claude/skills/` etc.)
 - `-a claude`, `-a cursor` — target Claude Code or Cursor only (omit or add agents as needed)
 - List skills in the repo first: `npx skills add godaddy/nodejs-hosting-agent-skill --list`
-- Install just one skill if you don't need the other — they are independent.
 
-Then open your **app** workspace and use **`@godaddy-nodejs-hosting`** (deploy) or **`@godaddy-nodejs-hosting-email`** (email) in chat.
+Then open your **app** workspace and use **`@godaddy-nodejs-hosting`** in chat. It covers building/adapting apps, managed MySQL, and transactional email.
 
 ## Cursor / Claude Code marketplace
 
-When GoDaddy publishes a **Cursor plugin** or Claude marketplace entry, install from the in-app marketplace panel and invoke **`@godaddy-nodejs-hosting`** or **`@godaddy-nodejs-hosting-email`**.
+When GoDaddy publishes a **Cursor plugin** or Claude marketplace entry, install from the in-app marketplace panel and invoke **`@godaddy-nodejs-hosting`**.
 
 Until then, use the [Skills CLI](#install-with-skills-cli-recommended) or [install from source](#install-from-source).
 
-Neither skill auto-runs (`disable-model-invocation`); you must @-mention it or ask explicitly.
+The skill does not auto-run (`disable-model-invocation`); you must @-mention it or ask explicitly.
 
 ### After install — quick check
 
 1. Open the folder that contains your app’s `package.json`.
 2. Prompt: *“@godaddy-nodejs-hosting Help me prepare this project for GoDaddy Node.js Hosting.”*
 3. Confirm the agent runs `validate-paas.mjs` and shares the pre-upload checklist before saying the app is ready.
-4. Prompt (if you want to send email): *“@godaddy-nodejs-hosting-email Add a contact form that emails submissions to me.”* Confirm the agent adds `src/server/email.ts`, omits `from`, and reads the recipient from a `process.env` variable (not from anonymous request bodies).
+4. Prompt (if you want to send email): *“@godaddy-nodejs-hosting Add a contact form that emails submissions to me.”* Confirm the agent adds `src/server/email.ts`, omits `from`, and reads the recipient from a `process.env` variable (not from anonymous request bodies).
 
 ## Without Agent Skills
 
@@ -80,7 +76,6 @@ For contributors or when the repo is not yet public on the Skills CLI registry.
 git clone https://github.com/godaddy/nodejs-hosting-agent-skill.git
 cd nodejs-hosting-agent-skill
 npx skills add . --skill godaddy-nodejs-hosting -g -a cursor -y
-npx skills add . --skill godaddy-nodejs-hosting-email -g -a cursor -y   # optional
 ```
 
 ### Cursor (manual symlink)
@@ -89,17 +84,15 @@ npx skills add . --skill godaddy-nodejs-hosting-email -g -a cursor -y   # option
 git clone https://github.com/godaddy/nodejs-hosting-agent-skill.git
 cd nodejs-hosting-agent-skill
 ln -sf "$(pwd)/skills/godaddy-nodejs-hosting" ~/.cursor/skills/godaddy-nodejs-hosting
-ln -sf "$(pwd)/skills/godaddy-nodejs-hosting-email" ~/.cursor/skills/godaddy-nodejs-hosting-email   # optional
 ```
 
-Restart Cursor. Use **`@godaddy-nodejs-hosting`** or **`@godaddy-nodejs-hosting-email`** in your app workspace.
+Restart Cursor. Use **`@godaddy-nodejs-hosting`** in your app workspace.
 
 **Windows:**
 
 ```powershell
 mkdir $env:USERPROFILE\.cursor\skills -Force
 Copy-Item -Recurse skills\godaddy-nodejs-hosting $env:USERPROFILE\.cursor\skills\godaddy-nodejs-hosting
-Copy-Item -Recurse skills\godaddy-nodejs-hosting-email $env:USERPROFILE\.cursor\skills\godaddy-nodejs-hosting-email
 ```
 
 ### Cursor (project-scoped)
@@ -107,7 +100,6 @@ Copy-Item -Recurse skills\godaddy-nodejs-hosting-email $env:USERPROFILE\.cursor\
 ```bash
 mkdir -p .cursor/skills
 ln -sf /path/to/nodejs-hosting-agent-skill/skills/godaddy-nodejs-hosting .cursor/skills/godaddy-nodejs-hosting
-ln -sf /path/to/nodejs-hosting-agent-skill/skills/godaddy-nodejs-hosting-email .cursor/skills/godaddy-nodejs-hosting-email
 ```
 
 ### Claude Code

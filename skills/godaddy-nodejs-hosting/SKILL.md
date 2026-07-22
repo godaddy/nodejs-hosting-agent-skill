@@ -12,7 +12,7 @@ disable-model-invocation: true
 
 Help users build or fix Node.js apps for **GoDaddy Node.js Hosting** (upload → install → `run build` → `run start`). Package manager: **npm**, **pnpm**, or **yarn** (lockfile determines platform choice).
 
-Rules: [contract.md](contract.md). Recipes: [examples.md](examples.md). Errors: [troubleshooting.md](troubleshooting.md). Validator: [scripts/validate-paas.mjs](scripts/validate-paas.mjs).
+Rules: [contract.md](contract.md). Recipes: [examples.md](examples.md). Errors: [troubleshooting.md](troubleshooting.md). Email: [email.md](email.md). Validator: [scripts/validate-paas.mjs](scripts/validate-paas.mjs).
 
 ## When to use which path
 
@@ -22,6 +22,7 @@ Rules: [contract.md](contract.md). Recipes: [examples.md](examples.md). Errors: 
 | Existing repo / deploy failed / make this work on hosting | [Adapting an existing app](#adapting-an-existing-app) |
 | AI export (Lovable, Replit, Bolt, etc.) | [Adapting an existing app](#adapting-an-existing-app) + [AI export quick fixes](#ai-export-quick-fixes) |
 | Uses MySQL / database on platform | [Managed MySQL](#managed-mysql) |
+| Sends email / contact form / notifications | [Email](#email) |
 
 ## Audience routing
 
@@ -46,6 +47,7 @@ Rules: [contract.md](contract.md). Recipes: [examples.md](examples.md). Errors: 
 - Secrets via `process.env`; no `.env` in zip; zip under 100 MB
 - One app per upload; lockfile when possible
 - Outbound HTTP/HTTPS only; platform MySQL via `DB_*` env + `mysql2` if using a database ([contract.md](contract.md))
+- Email via the platform gateway (`http://127.0.0.1:2525/api/email/send`) using the vended `sendEmail()` helper; no `nodemailer`, no external SMTP ([email.md](email.md))
 
 ## Publishing updates (customer communication)
 
@@ -61,6 +63,20 @@ The platform supports **Git repository sync** and **zip upload** in the Node.js 
 Optional platform MySQL injects `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`. The app must read each from `process.env` (not hard-coded). Use **`mysql2`** in `dependencies` and parameterized queries.
 
 Recipe: [examples.md#managed-mysql](examples.md#managed-mysql). Validator: **E009**, **E010** when a DB client or Prisma MySQL provider is detected.
+
+## Email
+
+Apps send transactional email (contact forms, notifications, receipts, password resets) through the platform's built-in gateway at **`http://127.0.0.1:2525/api/email/send`** — loopback-only, inside every container. No SMTP config, no `nodemailer`, no third-party API keys; outbound SMTP is not routable from the container.
+
+Copy the `sendEmail()` helper into `src/server/email.ts` and call it from route handlers. **All email code calls the helper** — never POST to the gateway directly, never import `nodemailer`.
+
+Load-bearing rules (full detail: [email.md](email.md)):
+
+- **Omit `from` by default** — the gateway picks the app's canonical sender. Set `from` only as a hardcoded literal on a verified domain (unverified → 400); never from user input.
+- **Fixed recipients** (contact-form admin, alerts) come from `process.env` (e.g. `CONTACT_FORM_RECIPIENT_EMAIL`), set in the Node.js Hosting UI — never hardcode, never TODO-placeholder. Fail closed when unset. Per-user recipients plumb through from app data, not anonymous request bodies.
+- **Don't echo raw gateway errors to end-users** — log server-side, show a generic failure message.
+
+Recipe and helper: [email.md](email.md). Contract rule: **C13**. Migrating existing `nodemailer` code: [email.md#migrating-from-nodemailer](email.md#migrating-from-nodemailer).
 
 ## Adapting an existing app
 
