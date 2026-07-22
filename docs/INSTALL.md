@@ -104,7 +104,7 @@ ln -sf /path/to/nodejs-hosting-agent-skill/skills/godaddy-nodejs-hosting .cursor
 
 ### Claude Code
 
-Symlink or copy each `skills/<skill-id>/` folder you want into your Claude Code user `skills` directory.
+Symlink or copy `skills/godaddy-nodejs-hosting/` into your Claude Code user `skills` directory.
 
 ## Validator only
 
