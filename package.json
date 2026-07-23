@@ -5,7 +5,7 @@
   "description": "Agent skill and validator for GoDaddy Node.js Hosting (PaaS)",
   "license": "MIT",
   "scripts": {
-    "test": "node --test tests/validate-paas.test.mjs tests/drift-check.test.mjs",
+    "test": "node --test tests/validate-paas.test.mjs tests/drift-check.test.mjs tests/email-helper.test.mjs",
     "validate": "node skills/godaddy-nodejs-hosting/scripts/validate-paas.mjs"
   },
   "engines": {

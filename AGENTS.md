@@ -189,6 +189,12 @@ Read these from `process.env`. Use the **`mysql2`** package and **parameterized 
 
 External databases on arbitrary hosts/ports are not reachable unless exposed over HTTPS (e.g. some serverless providers). Otherwise migrate to platform MySQL or an HTTPS-accessible service.
 
+### 10. Email (if the app sends mail)
+
+Node.js Hosting exposes a transactional email gateway at **`http://127.0.0.1:2525/api/email/send`** inside the container. `POST` JSON to it; the gateway handles SMTP, sender identity, and delivery. Do **not** import `nodemailer` and do **not** connect to external SMTP relays — outbound SMTP is not routable from the container.
+
+Copy the `sendEmail()` helper from the skill's email recipe (`skills/godaddy-nodejs-hosting/email.md`) into `src/server/email.ts` and call it from your route handlers. Omit `from` by default (the gateway picks the canonical sender). Store fixed recipient addresses (e.g. contact-form admin) in Node.js Hosting environment variables — do not hardcode. Do not surface raw gateway errors to end-users.
+
 ## Environment Variables
 
 - `PORT` is provided automatically. Always use `process.env.PORT`.

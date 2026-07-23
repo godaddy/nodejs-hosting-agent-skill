@@ -2,7 +2,11 @@
 
 Repository: [github.com/godaddy/nodejs-hosting-agent-skill](https://github.com/godaddy/nodejs-hosting-agent-skill)
 
-Installable skill path: **`skills/godaddy-nodejs-hosting/`** (skill id: **`godaddy-nodejs-hosting`**).
+Installable skill:
+
+| Skill id | Path | What it does |
+|----------|------|--------------|
+| **`godaddy-nodejs-hosting`** | `skills/godaddy-nodejs-hosting/` | Build/adapt Node.js apps for Node.js Hosting: `package.json`, PORT binding, framework recipes, managed MySQL, transactional email via the platform gateway, deploy contract. |
 
 ## Who is this for?
 
@@ -33,7 +37,7 @@ npx skills add godaddy/nodejs-hosting-agent-skill --skill godaddy-nodejs-hosting
 - `-a claude`, `-a cursor` — target Claude Code or Cursor only (omit or add agents as needed)
 - List skills in the repo first: `npx skills add godaddy/nodejs-hosting-agent-skill --list`
 
-Then open your **app** workspace and use **`@godaddy-nodejs-hosting`** in chat.
+Then open your **app** workspace and use **`@godaddy-nodejs-hosting`** in chat. It covers building/adapting apps, managed MySQL, and transactional email.
 
 ## Cursor / Claude Code marketplace
 
@@ -48,6 +52,7 @@ The skill does not auto-run (`disable-model-invocation`); you must @-mention it 
 1. Open the folder that contains your app’s `package.json`.
 2. Prompt: *“@godaddy-nodejs-hosting Help me prepare this project for GoDaddy Node.js Hosting.”*
 3. Confirm the agent runs `validate-paas.mjs` and shares the pre-upload checklist before saying the app is ready.
+4. Prompt (if you want to send email): *“@godaddy-nodejs-hosting Add a contact form that emails submissions to me.”* Confirm the agent adds `src/server/email.ts`, omits `from`, and reads the recipient from a `process.env` variable (not from anonymous request bodies).
 
 ## Without Agent Skills
 

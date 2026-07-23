@@ -16,6 +16,7 @@ const REQUIRED_IN_AGENTS = [
   'node_modules',
   'mysql2',
   'DB_HOST',
+  '127.0.0.1:2525',
   '100 MB',
   'Node.js Hosting',
   'pnpm',
@@ -30,6 +31,7 @@ const REQUIRED_IN_CONTRACT = [
   'main',
   'mysql2',
   'DB_HOST',
+  '127.0.0.1:2525',
   'pnpm',
   'yarn',
 ];
