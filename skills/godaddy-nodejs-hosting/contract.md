@@ -29,6 +29,7 @@ Testable rules for apps deployed on GoDaddy Node.js Hosting (PaaS). Enforced by 
 | C11 | Outbound: HTTP (80), HTTPS (443), and GoDaddy managed MySQL only. | — |
 | C12 | If using DB: read `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD` from `process.env`; use `mysql2` in `dependencies` and parameterized queries. External DBs on non-80/443 are not reachable. | E009, E010 |
 | C13 | If sending email: use the platform gateway (`http://127.0.0.1:2525/api/email/send`) via the vended `sendEmail()` helper — no `nodemailer`, no external SMTP. Omit `from` (or hardcode a verified-domain literal); read fixed recipients from `process.env`; don't surface raw gateway errors. See [email.md](email.md). | — |
+| C14 | Include a project-root `.npmrc` containing `registry=https://registry.npmjs.org/` so the platform install uses the public registry. If the lockfile contains non-public registry URLs, delete it and reinstall with `.npmrc` in place before uploading. | — |
 
 ## Framework build hints
 

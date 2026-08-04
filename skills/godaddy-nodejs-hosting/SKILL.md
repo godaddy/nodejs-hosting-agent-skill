@@ -128,6 +128,7 @@ Symptom detail: [troubleshooting.md](troubleshooting.md).
 | W004 | Exclude `node_modules` from deployment (zip or Git) |
 | E009 | Add `mysql2` to `dependencies` |
 | E010 | Read each `DB_*` from `process.env` (see [managed-mysql](examples.md#managed-mysql)) |
+| C14 | Create `.npmrc` with `registry=https://registry.npmjs.org/`. If the lockfile has non-public URLs, delete it and reinstall |
 
 **Special cases**
 
@@ -147,6 +148,7 @@ Copy and track progress:
 ```
 - [ ] Detect framework (package.json)
 - [ ] Apply recipe from examples.md
+- [ ] Add `.npmrc` with `registry=https://registry.npmjs.org/` to project root
 - [ ] install && run build (if exists) && run start (npm, pnpm, or yarn — match user's lockfile)
 - [ ] node scripts/validate-paas.mjs <project-dir>
 - [ ] Pre-upload checklist complete
@@ -191,6 +193,7 @@ For Lovable/Bolt static hosting, use the [vite-react-vue-spa](examples.md#vite-r
 - [ ] `process.env.PORT` for listening; secrets via `process.env`
 - [ ] Deployment artifact under 100 MB (zip upload)
 - [ ] Runs locally: install → build → start
+- [ ] `.npmrc` at project root with `registry=https://registry.npmjs.org/`. Lockfile URLs must be public npm (regenerate lockfile if not)
 - [ ] Lockfile present (committed or included in upload); validator exit 0; no `.env`
 - [ ] HTTP/HTTPS outbound only; DB uses `DB_*` + `mysql2` if applicable
 

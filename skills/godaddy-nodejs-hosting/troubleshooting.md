@@ -16,6 +16,7 @@ Map symptoms to [contract.md](contract.md) rules and validator IDs.
 | Monorepo upload fails | C1 | — | Upload single package folder only |
 | External API unreachable | C11 | — | Use HTTP/HTTPS (80/443) only |
 | Database connection fails | C12 | E009, E010 | Use platform MySQL: all five `DB_*` from `process.env`, `mysql2` in `dependencies`; not remote :3306 |
+| npm E401 / auth error during install | C14 | — | Add `.npmrc` with `registry=https://registry.npmjs.org/` to project root. If the lockfile contains non-public URLs, delete it and reinstall |
 
 ## Validator exit codes
 
