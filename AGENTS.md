@@ -78,6 +78,8 @@ yarn install && yarn build && yarn start
 
 On the platform, this is equivalent to: **install → run `build` → run `start`**.
 
+**Registry:** Include a project-root `.npmrc` with `registry=https://registry.npmjs.org/` so the platform install does not inherit a private registry. If your lockfile contains non-public registry URLs, delete it and reinstall locally after adding `.npmrc`.
+
 ### 2. Build and start scripts
 
 Both scripts are required:
@@ -400,6 +402,7 @@ Before uploading to Node.js Hosting, verify:
 - [ ] Zip under 100 MB (exclude caches and `node_modules`)
 - [ ] Runs locally: install → build → start (npm, pnpm, or yarn)
 - [ ] Lockfile in upload when possible
+- [ ] `.npmrc` at project root with `registry=https://registry.npmjs.org/`. Lockfile `resolved` URLs must be public npm
 - [ ] Outbound traffic uses HTTP/HTTPS only; DB uses platform MySQL env vars + `mysql2` if applicable
 
 ## Troubleshooting
