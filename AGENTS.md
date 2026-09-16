@@ -13,7 +13,7 @@ A local `.git` folder does **not** by itself mean the customer uses Git deploy (
 1. Customer provides the app via **zip upload** or **Git sync** in the Node.js Hosting UI
 2. The platform installs dependencies and builds the app
 3. The app is deployed to a private preview environment (requires GoDaddy auth to view)
-4. Once ready, the customer can publish to production and connect a custom domain
+4. Once ready, the customer can publish the app and connect a custom domain
 
 **Zip upload:** zip the project root, exclude irrelevant files (`node_modules`, build caches, and `.git`), and include a lockfile when possible.
 
@@ -191,18 +191,18 @@ Read these from `process.env`. Use the **`mysql2`** package and **parameterized 
 
 External databases on arbitrary hosts/ports are not reachable unless exposed over HTTPS (e.g. some serverless providers). Otherwise migrate to platform MySQL or an HTTPS-accessible service.
 
-#### One database across preview and production
+#### One database across preview and publish
 
-Preview and production run against **the same database**.
+The **preview** and **publish** environments run against the same database.
 The platform sets the `DB_*` values identically in both, so preview cannot be pointed at a separate database.
 
-- **Writes from preview are writes to production data.** A test submission in preview inserts a real row.
+- **Writes from preview are writes to the published app's data.** A test submission in preview inserts a real row.
 - **Do not insert sample or admin rows at startup.** On a shared database that silently writes into live data on every restart.
-- **Schema changes reach production as soon as preview applies them.** Add columns nullable or with a default, and save renames and drops for the publish that ships the code expecting them.
+- **Schema changes reach the published app as soon as preview applies them.** Add columns nullable or with a default, and save renames and drops for the publish that ships the code expecting them.
 
 The platform runs install, build, then start and nothing else, so **startup is the only hook your code gets**; there is no separate command to invoke afterwards. Any schema tooling works there: `CREATE TABLE IF NOT EXISTS`, a migration library like Knex, or whatever the app already uses. Two things to get right:
 
-- **Guard steps that cannot repeat safely.** Preview and production can boot at the same time against the one database, so a migration library needs a ledger table and a lock (MySQL `GET_LOCK`) to avoid double-applying. `CREATE TABLE IF NOT EXISTS` survives the race on its own.
+- **Guard steps that cannot repeat safely.** Preview and publish can boot at the same time against the one database, so a migration library needs a ledger table and a lock (MySQL `GET_LOCK`) to avoid double-applying. `CREATE TABLE IF NOT EXISTS` survives the race on its own.
 - **Fail loudly.** If a schema step fails, log it and exit rather than serve against a half-applied schema. The published build keeps running.
 
 **Local development:** you can run MySQL locally and point the `DB_*` variables at it, which keeps test data out of the shared database. The code does not change either way, since it reads them from `process.env`.
