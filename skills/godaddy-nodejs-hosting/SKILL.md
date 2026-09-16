@@ -66,6 +66,10 @@ Optional platform MySQL injects `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_
 
 Recipe: [examples.md#managed-mysql](examples.md#managed-mysql). Validator: **E009**, **E010** when a DB client or Prisma MySQL provider is detected.
 
+## Platform logs
+
+When a deploy fails and the local checks do not explain it, the GoDaddy CLI (`gddy`) reads platform logs: `gddy hosting nodejs logs --app-id <id> --target preview|publish --source exec --since <ISO-8601>`. Use `exec` for install and build failures, `stdout`/`stderr` for a crash after start ([troubleshooting.md](troubleshooting.md)).
+
 ## Email
 
 Apps send transactional email (contact forms, notifications, receipts, password resets) through the platform's built-in gateway at **`http://127.0.0.1:2525/api/email/send`** — loopback-only, inside every container. No SMTP config, no `nodemailer`, no third-party API keys; outbound SMTP is not routable from the container.
