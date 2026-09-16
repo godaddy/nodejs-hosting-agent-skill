@@ -442,18 +442,13 @@ Before uploading to Node.js Hosting, verify:
 
 ### Reading platform logs
 
-The GoDaddy CLI (`gddy`) fetches logs from the platform, which is the fastest way to see why a deploy failed. Hosting commands are in beta. Setup: [developer.godaddy.com](https://developer.godaddy.com/en/docs/api-users/cli/set-up).
+The GoDaddy CLI (`gddy`) reads logs from the platform, which is the fastest way to see why a deploy failed. It can fetch:
 
-```bash
-gddy auth login
-gddy hosting nodejs logs --app-id <app-id> --target preview --source exec --since 2026-01-01T00:00:00Z
-```
+- **Platform activity for a deploy:** install output, build output, and import failures. Start here when a deploy fails.
+- **The running app's own output:** stdout and stderr, for a crash after the app starts.
+- Either target, **preview** or **publish**, separately, plus the app's runtime status.
 
-- `--source exec` is platform activity: install, build output, import failures. Start here for a failed deploy.
-- `--source stdout` or `stderr` is the running app's own output. Use it for a crash after start.
-- `--target preview` or `publish` selects the environment. `--since` is required; `--lines` caps at 500.
-
-`gddy hosting nodejs status --app-id <app-id>` reports runtime status.
+Hosting commands are in beta. See [developer.godaddy.com](https://developer.godaddy.com/en/docs/api-users/cli/set-up) to install and authenticate, then `gddy --help` for the current commands.
 
 ## Getting Help
 

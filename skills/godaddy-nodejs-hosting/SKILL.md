@@ -68,7 +68,7 @@ Recipe: [examples.md#managed-mysql](examples.md#managed-mysql). Validator: **E00
 
 ## Platform logs
 
-When a deploy fails and the local checks do not explain it, the GoDaddy CLI (`gddy`) reads platform logs: `gddy hosting nodejs logs --app-id <id> --target preview|publish --source exec --since <ISO-8601>`. Use `exec` for install and build failures, `stdout`/`stderr` for a crash after start ([troubleshooting.md](troubleshooting.md)).
+When a deploy fails and the local checks do not explain it, the GoDaddy CLI (`gddy`) reads platform logs for either target: install and build output for a failed deploy, the app's stdout and stderr for a crash after start. Run `gddy --help` for the current commands ([troubleshooting.md](troubleshooting.md)).
 
 ## Email
 

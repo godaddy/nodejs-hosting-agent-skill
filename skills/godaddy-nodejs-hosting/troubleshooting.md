@@ -20,13 +20,7 @@ Map symptoms to [contract.md](contract.md) rules and validator IDs.
 
 ## Platform logs
 
-The GoDaddy CLI (`gddy`, hosting commands in beta) reads logs when the local checks above are not enough:
-
-```bash
-gddy hosting nodejs logs --app-id <app-id> --target preview|publish --source exec --since <ISO-8601>
-```
-
-`--source exec` covers install, build, and import failures (a failed deploy); `stdout` and `stderr` are the running app's output (a crash after start). `--since` is required, `--lines` caps at 500. Ask the user to run it and paste the output if the CLI is not authenticated locally.
+When the checks above do not explain a failure, the GoDaddy CLI (`gddy`, hosting commands in beta) reads platform logs: install, build, and import output for a failed deploy, or the running app's stdout and stderr for a crash after start, per **preview** or **publish** target. Run `gddy --help` for the current commands, or ask the user to fetch the logs and paste them.
 
 ## Validator exit codes
 
