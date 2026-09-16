@@ -62,6 +62,8 @@ The platform supports **Git repository sync** and **zip upload** in the Node.js 
 
 Optional platform MySQL injects `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`. The app must read each from `process.env` (not hard-coded). Use **`mysql2`** in `dependencies` and parameterized queries.
 
+**Preview and production share one database**, and the `DB_*` values are set by the platform in both. Preview writes are production writes, and a schema change reaches production as soon as preview applies it. Keep schema changes additive while the app is live (new columns nullable or defaulted, renames and drops saved for the publish that ships the code expecting them). Any schema tooling works. Tell the user about the shared database when they add a database or change the schema ([AGENTS.md](../../AGENTS.md) section 9).
+
 Recipe: [examples.md#managed-mysql](examples.md#managed-mysql). Validator: **E009**, **E010** when a DB client or Prisma MySQL provider is detected.
 
 ## Email

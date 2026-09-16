@@ -191,6 +191,18 @@ Read these from `process.env`. Use the **`mysql2`** package and **parameterized 
 
 External databases on arbitrary hosts/ports are not reachable unless exposed over HTTPS (e.g. some serverless providers). Otherwise migrate to platform MySQL or an HTTPS-accessible service.
 
+#### One database across preview and production
+
+Preview and production run against **the same database**.
+The platform sets the `DB_*` values identically in both, so preview cannot be pointed at a separate database.
+
+- **Writes from preview are writes to production data.** A test submission in preview inserts a real row.
+- **Schema changes reach production as soon as preview applies them.** Add columns nullable or with a default, and save renames and drops for the publish that ships the code expecting them.
+
+Any schema tooling works: `CREATE TABLE IF NOT EXISTS` during startup, a migration library like Knex, or whatever the app already uses.
+
+**Local development:** you can run MySQL locally and point the `DB_*` variables at it, which keeps test data out of the shared database. The code does not change either way, since it reads them from `process.env`.
+
 ### 10. Email (if the app sends mail)
 
 Node.js Hosting exposes a transactional email gateway at **`http://127.0.0.1:2525/api/email/send`** inside the container. `POST` JSON to it; the gateway handles SMTP, sender identity, and delivery. Do **not** import `nodemailer` and do **not** connect to external SMTP relays — outbound SMTP is not routable from the container.
