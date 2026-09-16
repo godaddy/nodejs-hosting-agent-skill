@@ -369,3 +369,5 @@ await pool.query(`
 ```
 
 A migration library (e.g. Knex) works the same way, since a migration run from preview reaches the published app. Add columns nullable or with a default, and save renames and drops for the publish that ships the code expecting them.
+
+Only `CREATE TABLE IF NOT EXISTS` is safe to re-run bare. MySQL has no `IF NOT EXISTS` inside `ALTER TABLE`, so a startup `ADD COLUMN` fails with a duplicate-column error the second time the app boots. A migration library's ledger table records what already ran; without one, check `information_schema.COLUMNS` before altering.
