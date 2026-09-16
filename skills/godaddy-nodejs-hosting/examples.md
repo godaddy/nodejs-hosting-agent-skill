@@ -325,7 +325,7 @@ app.listen(port);
 
 **Platform:** Since each Node.js Hosting app gets its own MySQL capacity automatically, the platform sets `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, and `DB_PASSWORD`. Read **each** from `process.env` in application code (typically one config module).
 
-**One database, both environments:** preview and production connect to the same database, and the platform sets the same `DB_*` values in both. Preview is not a sandbox for data.
+**One database, both environments:** preview and production connect to the same database, and the platform sets the same `DB_*` values in both. Preview is not a sandbox for data. It does require a GoDaddy login, so outside tools cannot reach it, which makes it the right place to exercise first-run setup before publishing.
 
 **package.json:**
 

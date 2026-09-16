@@ -197,9 +197,13 @@ Preview and production run against **the same database**.
 The platform sets the `DB_*` values identically in both, so preview cannot be pointed at a separate database.
 
 - **Writes from preview are writes to production data.** A test submission in preview inserts a real row.
+- **Do not insert sample or admin rows at startup.** On a shared database that silently writes into live data on every restart.
 - **Schema changes reach production as soon as preview applies them.** Add columns nullable or with a default, and save renames and drops for the publish that ships the code expecting them.
 
-Any schema tooling works: `CREATE TABLE IF NOT EXISTS` during startup, a migration library like Knex, or whatever the app already uses.
+The platform runs install, build, then start and nothing else, so **startup is the only hook your code gets**; there is no separate command to invoke afterwards. Any schema tooling works there: `CREATE TABLE IF NOT EXISTS`, a migration library like Knex, or whatever the app already uses. Two things to get right:
+
+- **Guard steps that cannot repeat safely.** Preview and production can boot at the same time against the one database, so a migration library needs a ledger table and a lock (MySQL `GET_LOCK`) to avoid double-applying. `CREATE TABLE IF NOT EXISTS` survives the race on its own.
+- **Fail loudly.** If a schema step fails, log it and exit rather than serve against a half-applied schema. The published build keeps running.
 
 **Local development:** you can run MySQL locally and point the `DB_*` variables at it, which keeps test data out of the shared database. The code does not change either way, since it reads them from `process.env`.
 
