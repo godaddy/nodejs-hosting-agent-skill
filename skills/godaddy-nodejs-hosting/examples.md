@@ -325,6 +325,8 @@ app.listen(port);
 
 **Platform:** Since each Node.js Hosting app gets its own MySQL capacity automatically, the platform sets `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, and `DB_PASSWORD`. Read **each** from `process.env` in application code (typically one config module).
 
+**One database, both environments:** preview and publish connect to the same database, and the platform sets the same `DB_*` values in both. Preview is not a sandbox for data. It does require a GoDaddy login, so outside tools cannot reach it, which makes it the right place to exercise first-run setup before publishing.
+
 **package.json:**
 
 ```json
@@ -351,3 +353,19 @@ module.exports = mysql.createPool({
 ```
 
 Use **parameterized** queries (`pool.query('SELECT * FROM users WHERE id = ?', [id])`). Do not interpolate user input into SQL strings.
+
+**Schema:** apply changes additively while the published build is live. Small apps create their tables during startup:
+
+```javascript
+// db/schema.js, awaited once during startup
+await pool.query(`
+  CREATE TABLE IF NOT EXISTS messages (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL,
+    body TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  )
+`);
+```
+
+Only `CREATE TABLE IF NOT EXISTS` is safe to re-run bare. MySQL has no `IF NOT EXISTS` inside `ALTER TABLE`, so a startup `ADD COLUMN` fails with a duplicate-column error the second time the app boots: use a migration library (e.g. Knex), whose ledger table records what already ran, or check `information_schema.COLUMNS` before altering. Add columns nullable or with a default, and save renames and drops for the publish that ships the code expecting them.
