@@ -13,7 +13,7 @@ A local `.git` folder does **not** by itself mean the customer uses Git deploy (
 1. Customer provides the app via **zip upload** or **Git sync** in the Node.js Hosting UI
 2. The platform installs dependencies and builds the app
 3. The app is deployed to a private preview environment (requires GoDaddy auth to view)
-4. Once ready, the customer can publish to production and connect a custom domain
+4. Once ready, the customer can publish the app and connect a custom domain
 
 **Zip upload:** zip the project root, exclude irrelevant files (`node_modules`, build caches, and `.git`), and include a lockfile when possible.
 
@@ -190,6 +190,21 @@ The platform provides managed **MySQL**. Credentials are injected as environment
 Read these from `process.env`. Use the **`mysql2`** package and **parameterized queries** — never interpolate user input into SQL strings.
 
 External databases on arbitrary hosts/ports are not reachable unless exposed over HTTPS (e.g. some serverless providers). Otherwise migrate to platform MySQL or an HTTPS-accessible service.
+
+#### One database across preview and publish
+
+The **preview** and **publish** environments run against the same database, and the platform sets the `DB_*` values identically in both, so preview cannot be pointed at a separate database.
+
+- **Writes from preview are writes to the published app's data.** A test submission in preview inserts a real row.
+- **Do not insert sample or admin rows at startup.** On a shared database that silently writes into live data on every restart.
+- **Schema changes reach the published app as soon as preview applies them.** Add columns nullable or with a default, and save renames and drops for the publish that ships the code expecting them.
+
+The platform runs install, build, then start and nothing else, so **startup is the only hook your code gets**. Any schema tooling works there, with two things to get right:
+
+- **Re-runnability.** `CREATE TABLE IF NOT EXISTS` is idempotent, so it survives restarts and two instances booting at once. A column addition is not: MySQL has no `IF NOT EXISTS` inside `ALTER TABLE`, so a bare `ADD COLUMN` fails on the next boot. Use a migration library like Knex, whose ledger table plus a lock (MySQL `GET_LOCK`) covers both, or check `information_schema.COLUMNS` first.
+- **Fail loudly.** If a schema step fails, log it and exit rather than serve against a half-applied schema. The published build keeps running.
+
+**Local development:** you can run MySQL locally and point the `DB_*` variables at it, which keeps test data out of the shared database. Nothing in the code changes.
 
 ### 10. Email (if the app sends mail)
 
@@ -423,6 +438,12 @@ Before uploading to Node.js Hosting, verify:
 ### Build failures
 - If the app needs a build step (TypeScript, Next.js, etc.), add a `"build"` script
 - Check that build output paths match what the `"start"` script expects
+
+### GoDaddy CLI
+
+GoDaddy ships a CLI (`gddy`) that drives Node.js Hosting from the terminal: uploading a new version, publishing to **preview** or **publish**, managing secrets, and reading platform logs. Logs are the fastest way to see why a deploy failed, covering install and build output for the deploy itself and the app's own stdout and stderr for a crash after the app starts.
+
+Setup and authentication: [developer.godaddy.com](https://developer.godaddy.com/llms.mdx/api-users/cli/set-up). Hosting commands are in beta and not covered there; [github.com/godaddy/cli](https://github.com/godaddy/cli) is the source of truth for what the CLI can currently do.
 
 ## Getting Help
 
