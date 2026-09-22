@@ -64,6 +64,12 @@ Optional platform MySQL injects `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_
 
 Recipe: [examples.md#managed-mysql](examples.md#managed-mysql). Validator: **E009**, **E010** when a DB client or Prisma MySQL provider is detected.
 
+## CLI
+
+GoDaddy ships a CLI (`gddy`) that drives Node.js Hosting from the terminal: uploading new code, previewing the app, publishing the app, managing secrets, and reading platform logs. Logs are the one to reach for when a deploy fails and the local checks do not explain it.
+
+Setup and authentication: [developer.godaddy.com](https://developer.godaddy.com/llms.mdx/api-users/cli/set-up). Hosting commands are in beta and not in those docs; [github.com/godaddy/cli](https://github.com/godaddy/cli) is the source of truth for what exists ([troubleshooting.md](troubleshooting.md)).
+
 ## Email
 
 Apps send transactional email (contact forms, notifications, receipts, password resets) through the platform's built-in gateway at **`http://127.0.0.1:2525/api/email/send`** — loopback-only, inside every container. No SMTP config, no `nodemailer`, no third-party API keys; outbound SMTP is not routable from the container.
