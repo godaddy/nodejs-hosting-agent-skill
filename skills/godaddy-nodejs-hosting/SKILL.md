@@ -68,7 +68,7 @@ Recipe: [examples.md#managed-mysql](examples.md#managed-mysql). Validator: **E00
 
 GoDaddy ships a CLI (`gddy`) that drives Node.js Hosting from the terminal: uploading new code, previewing the app, publishing the app, managing secrets, and reading platform logs. Logs are the one to reach for when a deploy fails and the local checks do not explain it.
 
-Setup and authentication: [developer.godaddy.com](https://developer.godaddy.com/llms.mdx/api-users/cli/set-up). Hosting commands are in beta and not in those docs; [github.com/godaddy/cli](https://github.com/godaddy/cli) is the source of truth for what exists ([troubleshooting.md](troubleshooting.md)).
+Setup and authentication: [developer.godaddy.com](https://developer.godaddy.com/llms.mdx/api-users/cli/set-up). Those docs provide a cheatsheet summarising the main commands, but [github.com/godaddy/cli](https://github.com/godaddy/cli) is the source of truth for the functionality available ([troubleshooting.md](troubleshooting.md)).
 
 ## Email
 
