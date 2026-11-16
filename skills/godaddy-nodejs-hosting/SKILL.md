@@ -62,7 +62,21 @@ The platform supports **Git repository sync** and **zip upload** in the Node.js 
 
 Optional platform MySQL injects `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`. The app must read each from `process.env` (not hard-coded). Use **`mysql2`** in `dependencies` and parameterized queries.
 
+**Preview and publish share one database**, and the `DB_*` values are set by the platform in both. Writes from preview are writes to the published app's data. Any change to the shared database affects both environments immediately, wherever it is made. Keep schema changes additive while the app is live (new columns nullable or defaulted, renames and drops saved for the publish that ships the code expecting them). Anything that writes rows at startup, sample or admin data included, lands in live data on every restart, so weigh it against that. Surface the shared database to the user when it bears on what they are building, such as when they add a database or change the schema ([AGENTS.md](../../AGENTS.md) section 9).
+
+The platform runs install, build, then start and nothing else, so startup is the only hook the app gets, and any schema tooling works there.
+
+A startup schema step can run more than once, and preview and publish can boot at once against the one database, so it needs to be safe to repeat and safe to run concurrently. A migration library's ledger and lock give that; a hand-rolled step needs its own guard. Exit on a failed schema step rather than serve a half-applied schema. A failed preview start leaves the published app running. A failed publish start takes the site down until the previous version is restored; on first publish, the placeholder page appears. Restoring the previous version does not roll back schema changes.
+
 Recipe: [examples.md#managed-mysql](examples.md#managed-mysql). Validator: **E009**, **E010** when a DB client or Prisma MySQL provider is detected.
+
+## GoDaddy CLI
+
+GoDaddy ships a CLI (`gddy`) that drives Node.js Hosting from the terminal: uploading a new version, deploying to preview or publish, managing secrets, and reading platform logs. Logs are the one to reach for when a deploy fails and the local checks do not explain it, covering install and build output for the deploy and the app's own stdout and stderr for a crash after start.
+
+- [Setup and authentication](https://developer.godaddy.com/llms.mdx/api-users/cli/set-up)
+- [Hosting commands](https://developer.godaddy.com/llms.mdx/api-users/cli/reference)
+- [godaddy/cli on GitHub](https://github.com/godaddy/cli): the source of truth for what the CLI can currently do ([troubleshooting.md](troubleshooting.md))
 
 ## Email
 

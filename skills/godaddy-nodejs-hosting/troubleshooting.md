@@ -18,6 +18,14 @@ Map symptoms to [contract.md](contract.md) rules and validator IDs.
 | Database connection fails | C12 | E009, E010 | Use platform MySQL: all five `DB_*` from `process.env`, `mysql2` in `dependencies`; not remote :3306 |
 | npm E401 / auth error during install | C14 | — | Add `.npmrc` with `registry=https://registry.npmjs.org/` to project root. If the lockfile contains non-public URLs, delete it and reinstall |
 
+## GoDaddy CLI
+
+The `gddy` CLI drives Node.js Hosting from the terminal: uploading a new version, deploying to **preview** or **publish**, managing secrets, and reading platform logs. When the checks above do not explain a failure, logs are the next step, covering install and build output for a deploy and the app's stdout and stderr for a crash after start.
+
+- [Setup and authentication](https://developer.godaddy.com/llms.mdx/api-users/cli/set-up)
+- [Hosting commands](https://developer.godaddy.com/llms.mdx/api-users/cli/reference)
+- [godaddy/cli on GitHub](https://github.com/godaddy/cli): the source of truth for what the CLI can currently do
+
 ## Validator exit codes
 
 | Code | Meaning |
